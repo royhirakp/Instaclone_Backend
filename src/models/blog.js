@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
   const ObjectId = Schema.ObjectId;
 
   const PostSchema = new Schema({   
-    image:String, 
+    
     author: String, 
     location: String,
     description: String   

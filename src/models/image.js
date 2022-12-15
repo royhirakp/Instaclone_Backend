@@ -1,8 +1,12 @@
-// const mongoose= require('mongoose');
-// const postimage=new mongoose.Schema({
-//     imagename:{type:String},
-//     imagedata:{type:String}
-// })
+const mongoose= require('mongoose');
+const postimage=new mongoose.Schema({
+    name:{type:String},
+    imagedata:{ data: Buffer, contentType: String },
+    location: {type: String},
+    description: String,
+    Date: Date,
+    like : Number
+})
 
-// const model = mongoose.model('Postimage',postimage);
-// module.exports=model;
+const model = mongoose.model('instaposts',postimage);
+module.exports=model;
