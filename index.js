@@ -1,13 +1,28 @@
-const express = require("express")//
-const app = express();//
-//body parser
-const bodyparser = require("body-parser");//
-app.use(bodyparser.json())//
-const InstapostRoute = require('./src/routes/postR')
+//CLUSTER
+const cluster = require("cluster");
+const os = require("os");
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+require("dotenv").config();
 
+const app = require("./app");
 
-app.use("/getpost",InstapostRoute)
-app.use("*", (req, res) => {
-    res.status(404).send("404 not found");
-});
-app.listen(4000, () => console.log("server ste=art at 4000")) 
+// cluster added
+if (cluster.isPrimary) {
+  console.log("if condition");
+  for (let i = 0; i < os.cpus().length; i++) {
+    cluster.fork();
+  }
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  // connect mongoDb dataBase
+  mongoose.connect(process.env.mongo).then(() => {
+    console.log("DB connected");
+  });
+  // start the server
+  app.listen(process.env.port, () => {
+    console.log(`Server is up at ${process.env.port} `);
+  });
+}
